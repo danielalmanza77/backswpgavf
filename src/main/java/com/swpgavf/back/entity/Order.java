@@ -31,4 +31,15 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private List<Product> products;
+
+    // New fields
+    private Long amount; // Total amount in cents (or smallest currency unit)
+    private String currency; // Currency code (e.g., "usd")
+
+    // Method to calculate total amount based on products
+    public void calculateTotalAmount() {
+        this.amount = products.stream()
+                .mapToLong(product -> (long) (product.getPrice() * 100)) // Assuming price is in dollars
+                .sum();
+    }
 }

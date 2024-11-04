@@ -16,4 +16,8 @@ public class OrderResponseDTO {
     private String status;
 
     private List<Product> products;
+
+    private Long amount; // Amount in cents
+
+    private String currency; // e.g., "usd"
 }

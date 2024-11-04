@@ -8,6 +8,8 @@ import com.swpgavf.back.exception.NotFoundException;
 import com.swpgavf.back.repository.IProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductService implements IProductService{
 
@@ -44,6 +46,15 @@ public class ProductService implements IProductService{
         // Retrieves the Product entity directly, throws exception if not found
         return productRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Product not found with ID: " + id));
+    }
+
+    /**
+     * Get products (plural) by Ids
+     * @param productIds
+     * @return
+     */
+    public List<Product> getProductsEntityByIds(List<Long> productIds) {
+        return productRepository.findAllById(productIds); // This method fetches products by their IDs
     }
 
     private ProductResponseDTO mapToDTO(Product product) {
