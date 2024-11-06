@@ -1,6 +1,5 @@
 package com.swpgavf.back.dto;
 
-import com.swpgavf.back.entity.Product;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -8,16 +7,10 @@ import java.util.List;
 
 @Data
 public class OrderResponseDTO {
-
     private Long id;
-
     private LocalDate orderDate;
-
     private String status;
-
-    private List<Product> products;
-
-    private Long amount; // Amount in cents
-
-    private String currency; // e.g., "usd"
+    private List<ProductOrderItemDTO> products;
+    private Long amount;
+    private String currency;
 }

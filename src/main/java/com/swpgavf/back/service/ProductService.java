@@ -27,14 +27,28 @@ public class ProductService implements IProductService{
 
     @Override
     public ProductResponseDTO create(ProductRequestDTO productRequestDTO) {
+        // Map the request DTO to the Product entity
         Product product = mapToEntity(productRequestDTO);
 
-        // Map image paths or names to pre-signed URLs
-        List<String> presignedUrls = generatePresignedUrls(productRequestDTO.getImageUrls());
-        product.setImageUrls(presignedUrls);
+        // Debugging log: Check the image paths (keys) that were passed in
+        System.out.println("Received image paths (keys): " + productRequestDTO.getImageUrls());
 
-        // Save product and return the response
+        // Generate presigned URLs based on the image keys
+        List<String> presignedUrls = generatePresignedUrls(productRequestDTO.getImageUrls());
+
+        // Log the generated presigned URLs for debugging purposes
+        System.out.println("Generated pre-signed URLs: " + presignedUrls);
+
+        // Store the image keys in the product (not the presigned URLs)
+        product.setImageUrls(productRequestDTO.getImageUrls());
+
+        // Log the product object before saving it
+        System.out.println("Product to save: " + product);
+
+        // Save the product
         productRepository.save(product);
+
+        // Return the mapped ProductResponseDTO
         return mapToDTO(product);
     }
 
@@ -80,11 +94,23 @@ public class ProductService implements IProductService{
         return productRepository.findAllById(productIds); // This method fetches products by their IDs
     }
 
+    public void updateAvailability(Long id, boolean available) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found"));
+        product.setAvailable(available);
+        productRepository.save(product);
+    }
+
+
     private ProductResponseDTO mapToDTO(Product product) {
         return objectMapper.convertValue(product, ProductResponseDTO.class);
     }
 
     private Product mapToEntity(ProductRequestDTO productRequestDTO) {
-        return objectMapper.convertValue(productRequestDTO, Product.class);
+        Product product = objectMapper.convertValue(productRequestDTO, Product.class);
+        // Set default availability to true if null
+        if (product.getAvailable() == null) {
+            product.setAvailable(true);
+        }
+        return product;
     }
 }

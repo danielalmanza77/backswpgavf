@@ -38,7 +38,13 @@ public class ProductController {
 
     @PostMapping("/presigned-urls")
     public List<String> getPresignedUrls(@RequestBody List<String> imagePaths) {
+        System.out.println("Received image paths: " + imagePaths);
         return productService.generatePresignedUrls(imagePaths);
+    }
+
+    @PatchMapping("/{id}/availability")
+    public void updateAvailability(@PathVariable Long id, @RequestParam boolean available) {
+        productService.updateAvailability(id, available);
     }
 
 }

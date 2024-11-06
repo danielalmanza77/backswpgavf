@@ -1,6 +1,5 @@
 package com.swpgavf.back.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,22 +24,17 @@ public class Order {
 
     private String status;
 
-    @ManyToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "orders_details",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products;
+    // Updated: Use OrderItems instead of a direct Many-to-Many relationship with Product
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems;  // List of order items, each with quantity and product
 
-    // New fields
-    private Long amount; // Total amount in cents (or smallest currency unit)
-    private String currency; // Currency code (e.g., "usd")
+    private Long amount;  // Total amount in cents (or smallest currency unit)
+    private String currency;  // Currency code (e.g., "usd")
 
-    // Method to calculate total amount based on products
+    // Method to calculate the total amount based on order items (product price * quantity)
     public void calculateTotalAmount() {
-        this.amount = products.stream()
-                .mapToLong(product -> (long) (product.getPrice() * 100)) // Assuming price is in dollars
+        this.amount = orderItems.stream()
+                .mapToLong(item -> (long) (item.getProduct().getPrice() * item.getQuantity() * 100))  // Price in cents
                 .sum();
     }
 }

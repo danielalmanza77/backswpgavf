@@ -13,4 +13,6 @@ public interface IProductService {
     List<String> generatePresignedUrls(List<String> imagePaths);
 
     List<ProductResponseDTO> getAll();
+
+    void updateAvailability(Long id, boolean available);
 }

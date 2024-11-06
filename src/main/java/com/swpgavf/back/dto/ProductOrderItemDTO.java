@@ -5,7 +5,8 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ProductRequestDTO {
+public class ProductOrderItemDTO {
+    private Long Id;
     private String sku;
     private String name;
     private String description;
@@ -15,4 +16,5 @@ public class ProductRequestDTO {
     private String brand;
     private List<String> imageUrls;
     private Boolean available;
+    private Integer quantity; // Quantity of this product in the order
 }

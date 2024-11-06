@@ -15,4 +15,5 @@ public class ProductResponseDTO {
     private Double price;
     private String brand;
     private List<String> imageUrls;
+    private Boolean available;
 }

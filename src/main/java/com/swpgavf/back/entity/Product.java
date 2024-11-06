@@ -23,7 +23,9 @@ public class Product {
     private Double price;
     private String brand;
 
+    @Lob
     @ElementCollection
     private List<String> imageUrls;
 
+    private Boolean available = false;
 }
