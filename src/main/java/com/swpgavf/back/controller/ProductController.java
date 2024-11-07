@@ -36,6 +36,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getById(id));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/presigned-urls")
     public List<String> getPresignedUrls(@RequestBody List<String> imagePaths) {
         System.out.println("Received image paths: " + imagePaths);
@@ -47,4 +53,9 @@ public class ProductController {
         productService.updateAvailability(id, available);
     }
 
+
+    @PostMapping("/{id}/availability")
+    public void toggleAvailability(@PathVariable Long id) {
+        productService.toggleAvailability(id);
+    }
 }

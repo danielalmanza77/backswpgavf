@@ -15,4 +15,8 @@ public interface IProductService {
     List<ProductResponseDTO> getAll();
 
     void updateAvailability(Long id, boolean available);
+
+    void delete(Long id);
+
+    void toggleAvailability(Long id);
 }

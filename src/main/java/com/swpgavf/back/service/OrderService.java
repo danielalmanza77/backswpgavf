@@ -106,7 +106,7 @@ public class OrderService implements IOrderService {
 
         order.setOrderItems(orderItems); // Make sure your Order entity has a field for the list of OrderItems
         order.calculateTotalAmount(); // This should calculate the total amount based on the OrderItems
-        order.setCurrency("usd"); // Or dynamically set the currency
+        order.setCurrency("pen"); // Or dynamically set the currency
 
         return order;
     }

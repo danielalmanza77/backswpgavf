@@ -100,6 +100,26 @@ public class ProductService implements IProductService{
         productRepository.save(product);
     }
 
+    @Override
+    public void delete(Long id) {
+        getById(id);
+        productRepository.deleteById(id);
+    }
+
+    @Override
+    public void toggleAvailability(Long id) {
+        // Get the product by id
+        Product product = getProductEntityById(id);
+
+        if (product != null) {
+            // Toggle the 'available' field (true -> false, false -> true)
+            product.setAvailable(!product.getAvailable());
+
+            // Save the updated product
+            updateAvailability(id, product.getAvailable());
+        }
+    }
+
 
     private ProductResponseDTO mapToDTO(Product product) {
         return objectMapper.convertValue(product, ProductResponseDTO.class);
