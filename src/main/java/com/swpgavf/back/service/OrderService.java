@@ -6,11 +6,19 @@ import com.swpgavf.back.dto.OrderResponseDTO;
 import com.swpgavf.back.dto.ProductOrderItemDTO;
 import com.swpgavf.back.entity.Order;
 import com.swpgavf.back.entity.OrderItem;
+import com.swpgavf.back.entity.Payment;
 import com.swpgavf.back.entity.Product;
 import com.swpgavf.back.exception.ResourceNotFoundException;
 import com.swpgavf.back.repository.IOrderRepository;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -110,5 +118,35 @@ public class OrderService implements IOrderService {
 
         return order;
     }
+    public void generateExcel(HttpServletResponse response) throws IOException {
+        List<Order> payments = orderRepository.findAll();
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("Orders");
+        HSSFRow row = sheet.createRow(0);
 
+        row.createCell(0).setCellValue("Order ID");
+        row.createCell(1).setCellValue("Order Date");
+        row.createCell(2).setCellValue("Status");
+        row.createCell(3).setCellValue("Amount");
+        row.createCell(4).setCellValue("Currency");
+
+
+        int dataRowIndex = 1;
+
+        for (Order order : payments) {
+            HSSFRow row1 = sheet.createRow(dataRowIndex);
+            row1.createCell(0).setCellValue(order.getId());
+            row1.createCell(1).setCellValue(order.getOrderDate());
+            row1.createCell(2).setCellValue(order.getStatus());
+            row1.createCell(3).setCellValue(order.getAmount());
+            row1.createCell(4).setCellValue(order.getCurrency());
+            dataRowIndex++;
+        }
+
+        ServletOutputStream outputStream = response.getOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+        outputStream.close();
+
+    }
 }

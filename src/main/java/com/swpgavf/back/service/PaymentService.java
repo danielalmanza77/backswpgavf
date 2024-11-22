@@ -1,14 +1,12 @@
 package com.swpgavf.back.service;
 
-import com.swpgavf.back.dto.PaymentResponseDTO;
-import com.swpgavf.back.entity.Order;
 import com.stripe.Stripe;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
+import com.swpgavf.back.dto.PaymentResponseDTO;
+import com.swpgavf.back.entity.Order;
 import com.swpgavf.back.entity.Payment;
 import com.swpgavf.back.repository.IPaymentRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -101,4 +99,6 @@ public class PaymentService implements IPaymentService {
 
         return responseDTO;
     }
+
+
 }

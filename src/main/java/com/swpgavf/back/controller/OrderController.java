@@ -7,10 +7,13 @@ import com.swpgavf.back.dto.PaymentResponseDTO;
 import com.swpgavf.back.entity.Order;
 import com.swpgavf.back.service.IOrderService;
 import com.swpgavf.back.service.IPaymentService;
+import com.swpgavf.back.service.IUserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -63,5 +66,17 @@ public class OrderController {
             System.err.println("Payment processing failed: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+    }
+
+    @GetMapping("/excel")
+    public void generateExcelReport(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=order.xls";
+
+        response.setHeader(headerKey, headerValue);
+
+        orderService.generateExcel(response);
     }
 }
