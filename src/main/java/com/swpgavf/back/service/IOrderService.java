@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.filters.ExpiresFilter;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface IOrderService {
@@ -18,5 +19,10 @@ public interface IOrderService {
 
     void updateOrderStatus(Long orderId, String status);
 
-    void generateExcel (HttpServletResponse response) throws IOException;
+    void generateExcel(HttpServletResponse response, LocalDate startDate, LocalDate endDate) throws IOException;
+
+
+    void generatePDF(HttpServletResponse response, LocalDate startDate, LocalDate endDate) throws IOException;
+
+
 }
