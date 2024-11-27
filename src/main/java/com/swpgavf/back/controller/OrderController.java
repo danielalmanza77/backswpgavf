@@ -7,10 +7,18 @@ import com.swpgavf.back.dto.PaymentResponseDTO;
 import com.swpgavf.back.entity.Order;
 import com.swpgavf.back.service.IOrderService;
 import com.swpgavf.back.service.IPaymentService;
+import com.swpgavf.back.service.IUserService;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -64,4 +72,63 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
+    @GetMapping("/excel")
+    public void generateExcel(
+            @RequestParam(required = false) LocalDate fecha,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/vnd.ms-excel");
+        String headerValue;
+
+
+        if (fecha != null) {
+            headerValue = "attachment; filename=ReporteVentas_" + fecha + ".xlsx";
+        } else if (startDate != null && endDate != null) {
+            headerValue = "attachment; filename=ReporteVentas_" + startDate + "_a_" + endDate + ".xlsx";
+        } else {
+            headerValue = "attachment; filename=ReporteVentas.xlsx";
+        }
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, headerValue);
+
+
+        if (fecha != null) {
+            orderService.generateExcel(response, fecha, fecha);
+        } else if (startDate != null && endDate != null) {
+            orderService.generateExcel(response, startDate, endDate);
+        } else {
+            throw new IllegalArgumentException("Debe proporcionar una fecha o un rango de fechas válido.");
+        }
+    }
+
+
+
+    @GetMapping("/pdf")
+    public void generatePdf(
+            @RequestParam(required = false) LocalDate fecha,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/pdf");
+
+        String headerValue;
+        if (fecha != null) {
+            headerValue = "attachment; filename=" + fecha + "-reporte.pdf";
+        } else {
+            headerValue = "attachment; filename=" + startDate + "-a-" + endDate + "-reporte.pdf";
+        }
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, headerValue);
+
+        if (fecha != null) {
+            orderService.generatePDF(response, fecha, fecha);
+        } else {
+            orderService.generatePDF(response, startDate, endDate);
+        }
+    }
+
 }
