@@ -2,7 +2,9 @@ package com.swpgavf.back.controller;
 
 import com.swpgavf.back.dto.ProductRequestDTO;
 import com.swpgavf.back.dto.ProductResponseDTO;
+import com.swpgavf.back.dto.ReviewResponseDTO;
 import com.swpgavf.back.service.IProductService;
+import com.swpgavf.back.service.IReviewService;
 import com.swpgavf.back.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +18,11 @@ import java.util.List;
 public class ProductController {
 
     private final IProductService productService;
+    private final IReviewService reviewService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, IReviewService reviewService) {
         this.productService = productService;
+        this.reviewService = reviewService;
     }
 
     @PostMapping
@@ -57,5 +61,10 @@ public class ProductController {
     @PostMapping("/{id}/availability")
     public void toggleAvailability(@PathVariable Long id) {
         productService.toggleAvailability(id);
+    }
+
+    @GetMapping("/reviews/{id}")
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewsOfProductByProductId (@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReviewsOfProductByProductId(id));
     }
 }

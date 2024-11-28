@@ -241,7 +241,7 @@ public class OrderService implements IOrderService {
 //        document.close();
 //    }
 
-    // Método para generar PDF con filtrado por fechas
+//     Método para generar PDF con filtrado por fechas
     public void generatePDF(HttpServletResponse response, LocalDate startDate, LocalDate endDate) throws IOException {
         // Filtrar los datos en función de las fechas
         List<Order> orders = orderRepository.findByOrderDateBetweenAndStatus(startDate, endDate, "PAID");

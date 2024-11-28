@@ -28,4 +28,7 @@ public class Product {
     private List<String> imageUrls;
 
     private Boolean available = false;
+
+    @ElementCollection
+    private List<Review> reviews;
 }
