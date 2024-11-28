@@ -124,6 +124,7 @@ public class OrderService implements IOrderService {
                     OrderItem orderItem = new OrderItem();
                     orderItem.setProduct(product); // Set the product
                     orderItem.setQuantity(orderItemDTO.getQuantity()); // Set the quantity from OrderItemDTO
+                    orderItem.setOrder(order);
                     return orderItem;
                 })
                 .collect(Collectors.toList());
