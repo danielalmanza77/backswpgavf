@@ -135,37 +135,6 @@ public class OrderService implements IOrderService {
 
         return order;
     }
-//    public void generateExcel(HttpServletResponse response) throws IOException {
-//        List<Order> payments = orderRepository.findAll();
-//        HSSFWorkbook workbook = new HSSFWorkbook();
-//        HSSFSheet sheet = workbook.createSheet("Orders");
-//        HSSFRow row = sheet.createRow(0);
-//
-//        row.createCell(0).setCellValue("Order ID");
-//        row.createCell(1).setCellValue("Order Date");
-//        row.createCell(2).setCellValue("Status");
-//        row.createCell(3).setCellValue("Amount");
-//        row.createCell(4).setCellValue("Currency");
-//
-//
-//        int dataRowIndex = 1;
-//
-//        for (Order order : payments) {
-//            HSSFRow row1 = sheet.createRow(dataRowIndex);
-//            row1.createCell(0).setCellValue(order.getId());
-//            row1.createCell(1).setCellValue(order.getOrderDate());
-//            row1.createCell(2).setCellValue(order.getStatus());
-//            row1.createCell(3).setCellValue(order.getAmount());
-//            row1.createCell(4).setCellValue(order.getCurrency());
-//            dataRowIndex++;
-//        }
-//
-//        ServletOutputStream outputStream = response.getOutputStream();
-//        workbook.write(outputStream);
-//        workbook.close();
-//        outputStream.close();
-//
-//    }
 
     public void generateExcel(HttpServletResponse response, LocalDate startDate, LocalDate endDate) throws IOException {
         List<Order> payments = orderRepository.findByOrderDateBetweenAndStatus(startDate, endDate, "PAID");
@@ -298,5 +267,6 @@ public class OrderService implements IOrderService {
         document.add(table);
         document.close();
     }
+
 
 }

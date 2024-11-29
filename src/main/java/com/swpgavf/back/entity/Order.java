@@ -37,4 +37,9 @@ public class Order {
                 .mapToLong(item -> (long) (item.getProduct().getPrice() * item.getQuantity() * 100))  // Price in cents
                 .sum();
     }
+
+    @Override
+    public String toString() {
+        return "Order{id=" + id + ", amount=" + amount + ", orderDate=" + orderDate + "}";
+    }
 }

@@ -5,6 +5,7 @@ import com.swpgavf.back.dto.OrderResponseDTO;
 import com.swpgavf.back.dto.PaymentRequestDTO;
 import com.swpgavf.back.dto.PaymentResponseDTO;
 import com.swpgavf.back.entity.Order;
+import com.swpgavf.back.exception.ResourceNotFoundException;
 import com.swpgavf.back.service.IOrderService;
 import com.swpgavf.back.service.IPaymentService;
 import com.swpgavf.back.service.IUserService;
@@ -50,25 +51,31 @@ public class OrderController {
             @PathVariable Long orderId,
             @RequestBody PaymentRequestDTO paymentRequestDTO) {
 
-        // Validate paymentRequestDTO
+        // Validar si el PaymentMethodId es nulo o vacío
         if (paymentRequestDTO.getPaymentMethodId() == null || paymentRequestDTO.getPaymentMethodId().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-        Order order = orderService.findOrderById(orderId); // Fetch order by ID
+        // Obtener la orden por su ID
+        Order order = orderService.findOrderById(orderId);
 
+        // Validar si la orden existe
         if (order == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Handle order not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
         try {
+            // Crear el intento de pago
             PaymentResponseDTO paymentResponse = paymentService.createPaymentIntent(order, paymentRequestDTO.getPaymentMethodId());
-            orderService.updateOrderStatus(orderId, "PAID"); // Update order status
+
+            // Actualizar el estado de la orden
+            orderService.updateOrderStatus(orderId, "PAID");
+
+            // Retornar la respuesta de éxito
             return ResponseEntity.ok(paymentResponse);
         } catch (Exception e) {
-            // Log the error and return a bad request response
-            System.err.println("Payment processing failed: " + e.getMessage());
+            // Registrar el error y retornar respuesta de error
+            System.err.println("Error procesando el pago: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -129,6 +136,14 @@ public class OrderController {
         } else {
             orderService.generatePDF(response, startDate, endDate);
         }
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<String> updateOrderStatus(
+            @PathVariable Long id,
+            @RequestParam String status) {
+        orderService.updateOrderStatus(id, status);
+        return ResponseEntity.ok("Order status updated successfully to: " + status);
     }
 
 }

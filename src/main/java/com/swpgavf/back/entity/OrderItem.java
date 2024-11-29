@@ -24,4 +24,9 @@ public class OrderItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;  // Reference to the order this item belongs to
+
+    @Override
+    public String toString() {
+        return "OrderItem{id=" + id + ", quantity=" + quantity + ", product=" + product.getId() + "}";
+    }
 }
