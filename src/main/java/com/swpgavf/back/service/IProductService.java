@@ -19,4 +19,6 @@ public interface IProductService {
     void delete(Long id);
 
     void toggleAvailability(Long id);
+
+    void actualizarStock(Long idProducto, int cantidad);
 }

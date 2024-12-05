@@ -120,6 +120,20 @@ public class ProductService implements IProductService{
         }
     }
 
+    @Override
+    public void actualizarStock(Long idProducto, int cantidad) {
+        Product producto = productRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        int nuevoStock = producto.getStock() + cantidad;
+        if (nuevoStock < 0) {
+            throw new RuntimeException("Stock insuficiente para realizar la operación");
+        }
+
+        producto.setStock(nuevoStock);
+        productRepository.save(producto);
+    }
+
 
     private ProductResponseDTO mapToDTO(Product product) {
         return objectMapper.convertValue(product, ProductResponseDTO.class);
