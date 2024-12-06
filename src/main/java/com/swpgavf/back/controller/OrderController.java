@@ -80,6 +80,7 @@ public class OrderController {
         }
     }
 
+
     @GetMapping("/excel")
     public void generateExcel(
             @RequestParam(required = false) LocalDate fecha,

@@ -3,6 +3,9 @@ package com.swpgavf.back.controller;
 import com.swpgavf.back.dto.ProductRequestDTO;
 import com.swpgavf.back.dto.ProductResponseDTO;
 import com.swpgavf.back.dto.ReviewResponseDTO;
+import com.swpgavf.back.dto.StockReductionDTO;
+import com.swpgavf.back.entity.Product;
+import com.swpgavf.back.repository.IProductRepository;
 import com.swpgavf.back.service.IProductService;
 import com.swpgavf.back.service.IReviewService;
 import com.swpgavf.back.service.ProductService;
@@ -19,10 +22,12 @@ public class ProductController {
 
     private final IProductService productService;
     private final IReviewService reviewService;
+    private final IProductRepository productRepository;
 
-    public ProductController(ProductService productService, IReviewService reviewService) {
+    public ProductController(ProductService productService, IReviewService reviewService, IProductRepository productRepository) {
         this.productService = productService;
         this.reviewService = reviewService;
+        this.productRepository = productRepository;
     }
 
     @PostMapping
@@ -66,5 +71,39 @@ public class ProductController {
     @GetMapping("/reviews/{id}")
     public ResponseEntity<List<ReviewResponseDTO>> getReviewsOfProductByProductId (@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReviewsOfProductByProductId(id));
+    }
+
+    @PostMapping("/reduce-stock")
+    public ResponseEntity<String> reduceStock(@RequestBody List<StockReductionDTO> stockReductionList) {
+        try {
+            // Iterate over the list of stock reductions
+            for (StockReductionDTO stockReduction : stockReductionList) {
+                Product product = productService.getProductEntityById(stockReduction.getProductId());
+
+                if (product != null) {
+                    int newStock = product.getStock() - stockReduction.getQuantity();
+
+                    // Check if there is enough stock
+                    if (newStock < 0) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body("No hay suficiente stock para el producto con ID: " + product.getId());
+                    }
+
+                    // Update the stock
+                    product.setStock(newStock);
+                    productRepository.save(product);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body("Producto no encontrado con ID: " + stockReduction.getProductId());
+                }
+            }
+
+            return ResponseEntity.ok("Stock reducido con éxito para los productos");
+        } catch (Exception e) {
+            // Handle errors and return a bad request response
+            System.err.println("Error reduciendo el stock: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ocurrió un error al reducir el stock");
+        }
     }
 }

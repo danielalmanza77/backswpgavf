@@ -2,6 +2,7 @@ package com.swpgavf.back.service;
 
 import com.swpgavf.back.dto.ProductRequestDTO;
 import com.swpgavf.back.dto.ProductResponseDTO;
+import com.swpgavf.back.entity.Product;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface IProductService {
     void toggleAvailability(Long id);
 
     void actualizarStock(Long idProducto, int cantidad);
+
+    Product getProductEntityById(Long id);
 }
